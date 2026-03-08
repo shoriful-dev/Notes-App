@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@theme {
+  --font-inter: "Inter", sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: #fbfcfd;
+  --foreground: #1a1c1e;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --accent: #f0f9ff;
+  --border: #e2e8f0;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    font-family: var(--font-inter);
+    @apply bg-[#f8fafc] text-slate-900 antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-all duration-200 shadow-sm active:scale-95 disabled:opacity-50;
+  }
+
+  .icon-btn {
+    @apply text-xl text-slate-400 cursor-pointer hover:text-blue-600 transition-all duration-200 p-1 rounded-full hover:bg-slate-100;
+  }
+
+  .input-label {
+    @apply text-[11px] font-bold text-slate-400 tracking-wider mb-1;
+  }
+
+  .card-shadow {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+}
