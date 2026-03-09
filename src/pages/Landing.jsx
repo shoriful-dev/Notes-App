@@ -615,10 +615,10 @@ const Landing = () => {
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <a href="#" className="w-9 h-9 bg-slate-800 dark:bg-slate-900 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <a href="https://github.com/shoriful-dev" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-slate-800 dark:bg-slate-900 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all" title="GitHub">
                                 <Github className="w-4 h-4" />
                             </a>
-                            <a href="#" className="w-9 h-9 bg-slate-800 dark:bg-slate-900 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <a href="https://x.com/shoriful_dev" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-slate-800 dark:bg-slate-900 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all" title="X (Twitter)">
                                 <Twitter className="w-4 h-4" />
                             </a>
                         </div>

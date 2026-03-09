@@ -1,87 +1,99 @@
-# NotesApp — Modern Full-Stack Note-Taking Solution
+# NotesApp — Premium Full-Stack Note-Taking Solution
 
-A premium, fast, and secure note-taking application built with the MERN stack (MongoDB, Express, React, Node.js). Features a beautiful, responsive UI with dark mode support, intelligent search, and organized tagging.
+![NotesApp Home Preview](./public/home-preview.png)
 
-## 🚀 Features
+NotesApp is a professional, high-performance note-taking workspace designed for modern productivity. It features a stunning glassmorphic UI, lightning-fast search, and a robust MERN (MongoDB, Express, React, Node.js) architecture.
 
-- **Rich Note Management**: Create, edit, delete, and pin important notes.
-- **Smart Organization**: Categorize notes with custom tags and color-coded priority levels.
-- **Instant Search**: Lightning-fast search across titles and content using MongoDB Text Indexes.
-- **Personalized Profile**: Update your profile picture and information directly from the dashboard.
-- **Premium UI/UX**: 
-  - Fully responsive design (Mobile, Tablet, Desktop).
-  - Modern Dark Mode support.
-  - Smooth animations with Framer Motion.
-  - Glassmorphic headers and sidebar.
+---
+
+## ✨ Features
+
+### 🗒️ Smart Note Management
+- **PIN & Organize**: Keep your most important thoughts at the top.
+- **Color Coding**: Categorize notes using a vibrant, premium color palette.
+- **Priority Labels**: Set Low, Medium, or High priority to manage your workflow.
+- **Instant Search**: Search across thousands of notes in milliseconds using MongoDB Text Indexes.
+
+### 🎨 Premium UI/UX
+- **Dual Mode**: Seamless transition between a sleek Light Mode and a deep, eye-pleasing Dark Mode.
+- **Glassmorphism**: Modern UI aesthetics with blurred backdrops and subtle borders.
+- **Fully Responsive**: Pixel-perfect experience on mobile, tablet, and desktop.
+- **Smooth Animations**: Powered by `framer-motion` for a fluid, high-end feel.
+
+### 🛡️ Secure & Scalable
+- **JWT Authentication**: Secure user sessions with JSON Web Tokens.
+- **Profile Customization**: Upload and change profile images directly from the dashboard (powered by `multer`).
 - **Performance Optimized**: 
-  - Slashed bundle size by removing heavy dependencies like `moment`.
-  - Memoized components and context for zero-lag interactions.
-  - Optimized backend queries with strategic database indexing.
-- **Secure Authentication**: Protected routes using JWT (JSON Web Tokens).
+  - Zero-lag mobile menu interactions.
+  - Slashed bundle size (removed `moment`).
+  - Strategic database indexing for extreme scalability.
+
+---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 19** (Vite)
-- **Tailwind CSS 4** (Styling)
-- **Framer Motion** (Animations)
-- **Lucide React** (Icons)
-- **Axios** (API Requests)
-- **Context API** (State Management)
+- **Framework**: [React 19](https://reactjs.org/) (Vite)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Networking**: [Axios](https://axios-http.com/)
 
 ### Backend
-- **Node.js & Express**
-- **MongoDB & Mongoose**
-- **JWT & BcryptJS** (Security)
-- **Multer** (Profile Image Uploads)
-- **Nodemailer** (Email Services)
+- **Server**: [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/)
+- **Database**: [MongoDB](https://www.mongodb.com/) (Mongoose)
+- **File Handling**: [Multer](https://github.com/expressjs/multer)
+- **Security**: [Bcrypt.js](https://github.com/dcodeIO/bcrypt.js) & JWT
 
-## 📦 Installation & Setup
+---
+
+## 📦 Getting Started
 
 ### Prerequisites
-- Node.js installed
-- MongoDB Atlas account or local MongoDB instance
+- Node.js (v18+)
+- MongoDB (Local or Atlas)
 
-### 1. Clone the Repository
+### 1. Installation
 ```bash
-git clone <repository-url>
+git clone https://github.com/shoriful-dev/Notes-App.git
 cd Notes-App
 ```
 
-### 2. Backend Setup
+### 2. Configure Backend
 ```bash
 cd backend
 npm install
 ```
-Create a `.env` file in the `backend` folder:
+Create a `.env` file:
 ```env
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
-ACCESS_TOKEN_SECRET=your_jwt_secret
+ACCESS_TOKEN_SECRET=your_secret_key
 ```
-Start the backend:
+Start server:
 ```bash
 npm run dev
 ```
 
-### 3. Frontend Setup
+### 3. Configure Frontend
 ```bash
 cd ../frontend
 npm install
-```
-Start the frontend:
-```bash
 npm run dev
 ```
 
-## 📱 Responsiveness
-The app is optimized for:
-- **Mobile**: Compact stats, touch-friendly buttons, and a sliding drawer menu.
-- **Tablet**: Balanced grid layouts and flexible sidebars.
-- **Desktop**: Expansive 4-column note grid for maximum productivity.
+---
 
-## 📝 License
-This project is licensed under the ISC License.
+## 📱 Mobile Experience
+The application is built with a **Mobile-First** philosophy. Features like the sliding drawer menu, compact status indicators, and touch-optimized buttons ensure a great experience on the go.
 
 ---
-Built with ❤️ by [shoriful-dev](https://github.com/shoriful-dev)
+
+## 🤝 Connect with Me
+Built with ❤️ by **shoriful-dev**
+
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/shoriful-dev)
+[![Twitter](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/shoriful_dev)
+
+---
+*License: ISC*
