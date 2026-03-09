@@ -1,17 +1,29 @@
-export const validateEmail = (email) => {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email);
+export const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
 };
 
-export const getInitials = (name) => {
-  if (!name) return "";
+export const getOrdinalDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.toLocaleString('default', { month: 'short' });
+  const year = date.getFullYear();
 
-  const words = name.split(" ");
-  let initials = "";
+  const ordinal = (d) => {
+    if (d > 3 && d < 21) return 'th';
+    switch (d % 10) {
+      case 1:  return "st";
+      case 2:  return "nd";
+      case 3:  return "rd";
+      default: return "th";
+    }
+  };
 
-  for (let i = 0; i < Math.min(words.length, 2); i++) {
-    initials += words[i][0];
-  }
-
-  return initials.toUpperCase();
+  return `${month} ${day}${ordinal(day)}, ${year}`;
 };

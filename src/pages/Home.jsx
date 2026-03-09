@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useEffect, useMemo, useContext, useCallback, lazy, Suspense } from "react";
 import Navbar from "../components/Navbar";
 import NoteCard from "../components/Cards/NoteCard";
-import AddEditNotes from "../components/AddEditNotes";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
@@ -10,12 +9,14 @@ import {
   FileText, Plus, Pin, BookOpen,
   Sparkles, LayoutGrid, List, Clock,
   TrendingUp, Tag, Search, Filter,
-  ArrowRight, MousePointer2, User
+  ArrowRight, MousePointer2, User, Menu
 } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from "../components/Sidebar";
 import SkeletonLoader from "../components/SkeletonLoader";
-import ProfileModal from "../components/ProfileModal";
+
+const AddEditNotes = lazy(() => import("../components/AddEditNotes"));
+const ProfileModal = lazy(() => import("../components/ProfileModal"));
 
 // ── Tiny helper ──────────────────────────────────────────────────────────────
 const getGreeting = () => {
@@ -25,17 +26,11 @@ const getGreeting = () => {
   return "Good evening";
 };
 
-const formatDate = (d) =>
-  new Date(d).toLocaleDateString("en-US", {
-    month: "short", day: "numeric", year: "numeric",
-  });
-
-// ── Component ─────────────────────────────────────────────────────────────────
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
     isShown: false, type: "add", data: null,
   });
-  const { user, loading: userLoading } = useContext(UserContext); // Updated context usage
+  const { user, loading: userLoading, setUser } = useContext(UserContext);
   const [allNotes, setAllNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -50,38 +45,34 @@ const Home = () => {
   const [stats, setStats] = useState({ total: 0, pinned: 0, recent: 0 });
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { setUser } = useContext(UserContext);
+  const [isSidebarOpenMobile, setIsSidebarOpenMobile] = useState(false);
   const navigate = useNavigate();
 
-  const filteredNotes = allNotes; // Server-side pagination & filtering takes care of it
+  const filteredNotes = allNotes;
 
-  // Removed allTags and recentNote as they are not used in the new structure
-  const onProfileUpdate = (updatedUser) => {
+  const onProfileUpdate = useCallback((updatedUser) => {
     setUser(updatedUser);
-  };
+  }, [setUser]);
 
-  // Removed stats array as it is not used in the new structure
+  const handleEdit = useCallback((n) => {
+    setOpenAddEditModal({ isShown: true, data: n, type: "edit" });
+  }, []);
 
-  // ── handlers ────────────────────────────────────────────────────────────────
-  const handleEdit = (n) => setOpenAddEditModal({ isShown: true, data: n, type: "edit" });
-
-  // Removed getUserInfo as user data comes from context
-
-  const getStats = async () => {
+  const getStats = useCallback(async () => {
     try {
       const r = await axiosInstance.get("/note/stats");
       if (r.data?.stats) setStats(r.data.stats);
     } catch {}
-  };
+  }, []);
 
-  const getAllTags = async () => {
+  const getAllTags = useCallback(async () => {
     try {
       const r = await axiosInstance.get("/note/tags");
       if (r.data?.tags) setAllTags(r.data.tags);
     } catch {}
-  };
+  }, []);
 
-  const getAllNotes = async () => {
+  const getAllNotes = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
@@ -102,42 +93,42 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, selectedTag, activeTab, searchQuery, navigate]);
 
-  const fetchAuxiliaryData = () => {
+  const fetchAuxiliaryData = useCallback(() => {
     getStats();
     getAllTags();
-  };
+  }, [getStats, getAllTags]);
 
-  const refreshGlobalData = () => {
+  const refreshGlobalData = useCallback(() => {
     getAllNotes();
     fetchAuxiliaryData();
-  };
+  }, [getAllNotes, fetchAuxiliaryData]);
 
-  const deleteNote = async (data) => {
+  const deleteNote = useCallback(async (data) => {
     try {
       const r = await axiosInstance.delete("/note/delete/" + data._id);
       if (r.data && !r.data.error) refreshGlobalData();
     } catch { }
-  };
+  }, [refreshGlobalData]);
 
-  const updateIsPinned = async (noteData) => {
+  const updateIsPinned = useCallback(async (noteData) => {
     try {
       const r = await axiosInstance.put("/note/update-pinned/" + noteData._id, {
         isPinned: !noteData.isPinned,
       });
       if (r.data?.note) refreshGlobalData();
     } catch { }
-  };
+  }, [refreshGlobalData]);
 
-  const onLogout = () => { 
+  const onLogout = useCallback(() => { 
     localStorage.clear();
     navigate("/login");
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchAuxiliaryData();
-  }, []);
+  }, [fetchAuxiliaryData]);
 
   useEffect(() => {
     setPage(1);
@@ -148,11 +139,8 @@ const Home = () => {
       getAllNotes();
     }, 300);
     return () => clearTimeout(delayDebounceFn);
-  }, [page, activeTab, selectedTag, searchQuery]);
+  }, [getAllNotes]);
 
-  // Removed NoteGrid and EmptyState components as they are replaced by new JSX structure
-
-  // ── render ───────────────────────────────────────────────────────────────────
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 dark:selection:text-blue-100">
       <Sidebar 
@@ -160,27 +148,37 @@ const Home = () => {
           onLogout={onLogout} 
           activeTab={activeTab} 
           setActiveTab={setActiveTab}
-          onEditProfile={() => setIsProfileModalOpen(true)}
+          onEditProfile={useCallback(() => setIsProfileModalOpen(true), [])}
+          isOpenMobile={isSidebarOpenMobile}
+          onCloseMobile={useCallback(() => setIsSidebarOpenMobile(false), [])}
       />
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top toolbar */}
-        <header className="h-24 px-8 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl sticky top-0 z-30 transition-colors duration-300">
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-black text-slate-800 dark:text-white transition-colors">
-              {getGreeting()}, <span className="text-blue-600 dark:text-blue-400">{user?.username?.split(' ')[0] || 'there'}!</span>
-            </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <Sparkles size={14} className="text-amber-500" />
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold tracking-tight uppercase transition-colors duration-300">Ready to capture your next big idea?</p>
+        <header className="h-20 lg:h-24 px-4 sm:px-6 lg:px-8 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl sticky top-0 z-30 transition-colors duration-300">
+          <div className="flex items-center gap-3 lg:gap-0">
+            <button 
+              onClick={() => setIsSidebarOpenMobile(true)}
+              className="p-2 lg:hidden rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-400 hover:text-blue-600 transition-all border border-slate-100 dark:border-slate-800"
+            >
+              <Menu size={20} />
+            </button>
+            <div className="flex flex-col">
+              <h1 className="text-lg lg:text-2xl font-black text-slate-800 dark:text-white transition-colors truncate max-w-[150px] lg:max-w-none">
+                {getGreeting()}, <span className="text-blue-600 dark:text-blue-400">{user?.username?.split(' ')[0] || 'there'}!</span>
+              </h1>
+              <div className="hidden sm:flex items-center gap-2 mt-1">
+                <Sparkles size={14} className="text-amber-500" />
+                <p className="text-[10px] lg:text-xs text-slate-500 dark:text-slate-400 font-bold tracking-tight uppercase transition-colors duration-300">Ready to capture your next big idea?</p>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 lg:gap-4">
             <div 
               onMouseEnter={() => setIsSearchHovered(true)}
               onMouseLeave={() => setIsSearchHovered(false)}
-              className="relative group hidden md:block"
+              className="relative group hidden lg:block"
             >
               <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${isSearchHovered ? 'text-blue-600' : 'text-slate-400'}`} />
               <input 
@@ -188,13 +186,13 @@ const Home = () => {
                 placeholder="Search notes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 pl-11 pr-4 w-72 bg-slate-50 dark:bg-slate-800 border border-transparent rounded-xl text-sm focus:bg-white dark:focus:bg-slate-700 focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/50 focus:border-blue-200 dark:focus:border-blue-700 transition-all duration-300 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-white font-medium font-inter"
+                className="h-11 pl-11 pr-4 w-64 xl:w-72 bg-slate-50 dark:bg-slate-800 border border-transparent rounded-xl text-sm focus:bg-white dark:focus:bg-slate-700 focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/50 focus:border-blue-200 dark:focus:border-blue-700 transition-all duration-300 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-white font-medium font-inter"
               />
             </div>
 
             <button 
               onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-              className="p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-700 flex items-center gap-2"
+              className="p-2 lg:p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-700 hidden sm:flex items-center gap-2"
               title={viewMode === 'grid' ? 'Switch to List' : 'Switch to Grid'}
             >
               {viewMode === 'grid' ? <List size={18} /> : <LayoutGrid size={18} />}
@@ -202,7 +200,7 @@ const Home = () => {
 
             <button 
               onClick={() => setIsProfileModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-sm dark:shadow-none active:scale-95"
+              className="hidden lg:flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-sm dark:shadow-none active:scale-95"
             >
               <User size={18} /> Edit Profile
             </button>
@@ -211,16 +209,16 @@ const Home = () => {
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setOpenAddEditModal({ isShown: true, type: "add", data: null })}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl shadow-blue-200/50 dark:shadow-none flex items-center gap-2 text-sm font-black tracking-tight transition-all active:ring-4 active:ring-blue-100"
+              className="px-4 lg:px-6 py-2.5 lg:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl lg:rounded-2xl shadow-lg lg:shadow-xl shadow-blue-200/50 dark:shadow-none flex items-center gap-2 text-xs lg:text-sm font-black tracking-tight transition-all active:ring-4 active:ring-blue-100"
             >
               <Plus size={18} strokeWidth={3} />
-              New Note
+              <span className="hidden sm:inline">New Note</span>
             </motion.button>
           </div>
         </header>
 
         {/* Stats Row */}
-        <div className="px-8 pt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="px-4 sm:px-6 lg:px-8 pt-6 lg:pt-8 grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
           {[
             { label: 'Total Notes', count: stats.total, icon: FileText, color: 'text-blue-600', bg: 'bg-blue-50' },
             { label: 'Favorites', count: stats.pinned, icon: Pin, color: 'text-amber-600', bg: 'bg-amber-50' },
@@ -231,21 +229,21 @@ const Home = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center gap-4 premium-shadow dark:shadow-none transition-colors duration-300"
+              className={`bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4 premium-shadow dark:shadow-none transition-colors duration-300 ${idx === 2 ? 'col-span-2 md:col-span-1' : ''}`}
             >
               <div className={`w-12 h-12 ${s.bg} dark:bg-opacity-10 rounded-xl flex items-center justify-center ${s.color}`}>
                 <s.icon size={20} />
               </div>
               <div>
-                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{s.label}</p>
-                <p className="text-xl font-black text-slate-900 dark:text-white font-outfit">{s.count}</p>
+                <p className="text-[10px] lg:text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{s.label}</p>
+                <p className="text-lg lg:text-xl font-black text-slate-900 dark:text-white font-outfit">{s.count}</p>
               </div>
             </motion.div>
           ))}
         </div>
 
         {/* Tag Pill Bar */}
-        <div className="px-8 mt-6">
+        <div className="px-4 sm:px-6 lg:px-8 mt-6">
           <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-2">
             <button
               onClick={() => { setSelectedTag(null); setPage(1); }}
@@ -270,16 +268,11 @@ const Home = () => {
                 #{tag}
               </button>
             ))}
-            {allTags.length === 0 && (
-              <span className="text-xs text-slate-400 font-medium ml-2 italic">
-                (Add tags to your notes to see them here)
-              </span>
-            )}
           </div>
         </div>
 
         {/* Scrollable content area */}
-        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
           <AnimatePresence mode="wait">
             {loading ? (
               <motion.div
@@ -303,7 +296,7 @@ const Home = () => {
                   }
                 }}
                 className={viewMode === 'grid' 
-                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" 
                   : "flex flex-col gap-4"
                 }
               >
@@ -381,28 +374,34 @@ const Home = () => {
         </div>
       </main>
 
-      {/* ── MODAL ── */}
-      <Modal
-        isOpen={openAddEditModal.isShown}
-        onRequestClose={() => setOpenAddEditModal({ isShown: false, type: "add", data: null })}
-        style={{ overlay: { backgroundColor: "rgba(0,0,0,0.45)", zIndex: 100, backdropFilter: "blur(4px)" } }}
-        contentLabel=""
-        className="max-w-xl w-[90%] max-h-[87vh] bg-white dark:bg-slate-900 rounded-3xl mx-auto mt-16 p-10 overflow-hidden outline-none shadow-2xl relative border border-slate-100 dark:border-slate-800 transition-colors"
-      >
-        <AddEditNotes
-          type={openAddEditModal.type}
-          noteData={openAddEditModal.data}
-          onClose={() => setOpenAddEditModal({ isShown: false, type: "add", data: null })}
-          getAllNotes={refreshGlobalData}
-          showToastMsg={() => { }}
-        />
-      </Modal>
-      <ProfileModal
-        isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
-        user={user}
-        onUpdate={onProfileUpdate}
-      />
+      {/* ── MODALS ── */}
+      <Suspense fallback={null}>
+        {openAddEditModal.isShown && (
+          <Modal
+            isOpen={openAddEditModal.isShown}
+            onRequestClose={() => setOpenAddEditModal({ isShown: false, type: "add", data: null })}
+            style={{ overlay: { backgroundColor: "rgba(0,0,0,0.45)", zIndex: 100, backdropFilter: "blur(4px)" } }}
+            contentLabel=""
+            className="max-w-xl w-[90%] max-h-[87vh] bg-white dark:bg-slate-900 rounded-3xl mx-auto mt-16 p-10 overflow-hidden outline-none shadow-2xl relative border border-slate-100 dark:border-slate-800 transition-colors"
+          >
+            <AddEditNotes
+              type={openAddEditModal.type}
+              noteData={openAddEditModal.data}
+              onClose={() => setOpenAddEditModal({ isShown: false, type: "add", data: null })}
+              getAllNotes={refreshGlobalData}
+              showToastMsg={() => { }}
+            />
+          </Modal>
+        )}
+        {isProfileModalOpen && (
+          <ProfileModal
+            isOpen={isProfileModalOpen}
+            onClose={() => setIsProfileModalOpen(false)}
+            user={user}
+            onUpdate={onProfileUpdate}
+          />
+        )}
+      </Suspense>
     </div>
   );
 };

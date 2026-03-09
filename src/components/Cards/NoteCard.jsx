@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment";
+import { getOrdinalDate } from "../../utils/helper";
 import { Pin, Trash2, Edit3, Clock } from "lucide-react";
 import { motion } from 'framer-motion';
 
@@ -32,7 +32,7 @@ const PRIORITY_BADGE = {
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
-const NoteCard = ({
+const NoteCard = React.memo(({
   title,
   date,
   content,
@@ -86,9 +86,9 @@ const NoteCard = ({
                   <Pin size={10} className="text-amber-500 dark:text-amber-400 fill-amber-400 dark:fill-amber-300" />
                 </div>
               )}
-              <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+              <span className="text-[10px] sm:text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
                 <Clock size={10} strokeWidth={3} />
-                {moment(date).format("MMM Do, YYYY")}
+                {getOrdinalDate(date)}
               </span>
             </div>
             <h6 className={`${isList ? "text-base" : "text-lg"} font-black text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1 font-outfit`}>
@@ -99,9 +99,9 @@ const NoteCard = ({
           {!isList && (
             <button 
               onClick={onPinNote}
-              className={`p-2.5 rounded-xl transition-all duration-300 active:scale-90 ${isPinned ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 shadow-sm shadow-blue-50 dark:shadow-none' : 'text-slate-300 dark:text-slate-600 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 hover:border-blue-100 dark:hover:border-blue-800 border border-transparent'}`}
+              className={`p-3 rounded-xl transition-all duration-300 active:scale-90 ${isPinned ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 shadow-sm shadow-blue-50 dark:shadow-none' : 'text-slate-300 dark:text-slate-600 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 hover:border-blue-100 dark:hover:border-blue-800 border border-transparent'}`}
             >
-              <Pin size={18} className={isPinned ? 'fill-blue-600 dark:fill-blue-400' : ''} />
+              <Pin size={20} className={isPinned ? 'fill-blue-600 dark:fill-blue-400' : ''} />
             </button>
           )}
         </div>
@@ -127,17 +127,17 @@ const NoteCard = ({
             <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
               <button
                 onClick={onEdit}
-                className="p-2.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-100 dark:hover:border-blue-800 border border-transparent rounded-xl transition-all active:scale-95 bg-white dark:bg-slate-800 shadow-sm dark:shadow-none"
+                className="p-3 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-100 dark:border-blue-800 border border-transparent rounded-xl transition-all active:scale-95 bg-white dark:bg-slate-800 shadow-sm dark:shadow-none"
                 title="Edit"
               >
-                <Edit3 size={16} strokeWidth={2.5} />
+                <Edit3 size={18} strokeWidth={2.5} />
               </button>
               <button
                 onClick={onDelete}
-                className="p-2.5 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-100 dark:hover:border-red-800 border border-transparent rounded-xl transition-all active:scale-95 bg-white dark:bg-slate-800 shadow-sm dark:shadow-none"
+                className="p-3 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-100 dark:hover:border-red-800 border border-transparent rounded-xl transition-all active:scale-95 bg-white dark:bg-slate-800 shadow-sm dark:shadow-none"
                 title="Delete"
               >
-                <Trash2 size={16} strokeWidth={2.5} />
+                <Trash2 size={18} strokeWidth={2.5} />
               </button>
             </div>
           </div>
@@ -177,6 +177,6 @@ const NoteCard = ({
       )}
     </motion.div>
   );
-};
+});
 
 export default NoteCard;

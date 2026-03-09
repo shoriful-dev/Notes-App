@@ -3,14 +3,23 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
     BookOpen, ArrowRight, CheckCircle2, Zap, Shield, Search,
     Tag, Lock, Star, PenLine, List, Lightbulb, ChevronDown,
-    Github, Twitter, Mail, LayoutDashboard
+    Github, Twitter, Mail, LayoutDashboard, Menu, X
 } from 'lucide-react';
 import UserContext from '../context/userContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Landing = () => {
     const navigate = useNavigate();
     const { user } = React.useContext(UserContext);
     const [openFaq, setOpenFaq] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const navLinks = [
+        { href: "#features", label: "Features" },
+        { href: "#how-it-works", label: "How it Works" },
+        { href: "#testimonials", label: "Reviews" },
+        { href: "#faq", label: "FAQ" },
+    ];
 
     const features = [
         {
@@ -129,41 +138,105 @@ const Landing = () => {
         <div className="min-h-screen bg-background font-inter text-foreground overflow-x-hidden transition-colors duration-300">
             {/* === NAV === */}
             <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border transition-colors duration-300">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-6 h-16 lg:h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                         <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none">
                             <BookOpen className="w-5 h-5 text-white" />
                         </div>
                         <span className="font-bold text-lg text-foreground">Notes<span className="text-blue-600">App</span></span>
                     </div>
+
                     <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-400">
-                        <a href="#features" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Features</a>
-                        <a href="#how-it-works" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">How it Works</a>
-                        <a href="#testimonials" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Reviews</a>
-                        <a href="#faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</a>
+                        {navLinks.map(link => (
+                            <a key={link.href} href={link.href} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                {link.label}
+                            </a>
+                        ))}
                     </div>
+
                     <div className="flex items-center gap-3">
-                        {!user ? (
-                            <>
-                                <Link to="/login" className="text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 hidden sm:block">Log in</Link>
+                        <div className="hidden sm:flex items-center gap-3">
+                            {!user ? (
+                                <>
+                                    <Link to="/login" className="text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3">Log in</Link>
+                                    <button
+                                        onClick={() => navigate('/signup')}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-200 dark:shadow-none transition-all active:scale-95"
+                                    >
+                                        Get Started Free
+                                    </button>
+                                </>
+                            ) : (
                                 <button
-                                    onClick={() => navigate('/signup')}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-200 dark:shadow-none transition-all active:scale-95"
+                                    onClick={() => navigate('/dashboard')}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-200 dark:shadow-none transition-all active:scale-95 flex items-center gap-2"
                                 >
-                                    Get Started Free
+                                    <LayoutDashboard className="w-4 h-4" />
+                                    Dashboard
                                 </button>
-                            </>
-                        ) : (
-                            <button
-                                onClick={() => navigate('/dashboard')}
-                                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-200 dark:shadow-none transition-all active:scale-95 flex items-center gap-2"
-                            >
-                                <LayoutDashboard className="w-4 h-4" />
-                                Dashboard
-                            </button>
-                        )}
+                            )}
+                        </div>
+                        
+                        {/* Mobile Menu Toggle */}
+                        <button 
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="p-2 md:hidden rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400"
+                        >
+                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
                     </div>
                 </div>
+
+                {/* Mobile Menu Dropdown */}
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="md:hidden bg-background border-b border-border overflow-hidden"
+                        >
+                            <div className="px-6 py-8 flex flex-col gap-6">
+                                {navLinks.map(link => (
+                                    <a 
+                                        key={link.href} 
+                                        href={link.href} 
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="text-lg font-bold text-slate-900 dark:text-white hover:text-blue-600 transition-colors"
+                                    >
+                                        {link.label}
+                                    </a>
+                                ))}
+                                <hr className="border-border" />
+                                {!user ? (
+                                    <div className="flex flex-col gap-4">
+                                        <Link 
+                                            to="/login" 
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="text-lg font-bold text-slate-600 dark:text-slate-400"
+                                        >
+                                            Log in
+                                        </Link>
+                                        <button
+                                            onClick={() => { navigate('/signup'); setIsMobileMenuOpen(false); }}
+                                            className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg"
+                                        >
+                                            Get Started Free
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => { navigate('/dashboard'); setIsMobileMenuOpen(false); }}
+                                        className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2"
+                                    >
+                                        <LayoutDashboard size={20} />
+                                        Dashboard
+                                    </button>
+                                )}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
 
             <main>
@@ -182,9 +255,9 @@ const Landing = () => {
                             The Modern Way to Take Notes
                         </div>
 
-                        <h1 className="text-5xl sm:text-6xl md:text-[5.5rem] font-extrabold text-foreground tracking-tight leading-[1.05] mb-6">
+                        <h1 className="text-4xl sm:text-6xl lg:text-[5.5rem] font-extrabold text-foreground tracking-tight leading-[1.1] mb-6 px-4">
                             Your ideas deserve a{' '}
-                            <span className="relative">
+                            <span className="relative inline-block">
                                 <span className="text-blue-600 dark:text-blue-500">better home.</span>
                                 <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
                                     <path d="M2 9C60 3 150 1 298 9" stroke="#3b82f6" strokeWidth="3" strokeLinecap="round" opacity="0.3"/>
@@ -309,7 +382,7 @@ const Landing = () => {
                 {/* === WHY NOTESAPP === */}
                 <section className="py-8 px-6 bg-slate-900 dark:bg-slate-950 text-white transition-colors duration-300">
                     <div className="max-w-7xl mx-auto">
-                        <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-700 dark:divide-slate-800">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-slate-700 dark:divide-slate-800">
                             {[
                                 { value: "10K+", label: "Active Users" },
                                 { value: "1M+", label: "Notes Created" },
@@ -340,7 +413,7 @@ const Landing = () => {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                             {features.map((f, i) => (
                                 <div key={i} className="group p-8 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-blue-100 dark:hover:border-blue-800 hover:shadow-xl hover:shadow-blue-50 dark:hover:shadow-none transition-all duration-300 bg-background">
                                     <div className={`w-12 h-12 rounded-2xl ${f.color} dark:bg-slate-800 dark:text-blue-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
@@ -437,7 +510,7 @@ const Landing = () => {
                                 Real people. Real results.
                             </h2>
                         </div>
-                        <div className="grid md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {testimonials.map((t, i) => (
                                 <div key={i} className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-8 flex flex-col gap-6 transition-colors duration-300">
                                     <div className="flex items-center gap-1">

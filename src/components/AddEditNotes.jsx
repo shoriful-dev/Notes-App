@@ -64,7 +64,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
         <label className="input-label tracking-widest">NOTE TITLE</label>
         <input
           type="text"
-          className="text-3xl font-black text-slate-900 dark:text-white outline-none bg-slate-50/50 dark:bg-slate-900/50 px-4 py-3 rounded-2xl border border-transparent focus:bg-white dark:focus:bg-slate-800 focus:border-blue-200 dark:focus:border-blue-800 focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/50 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-300 font-outfit"
+          className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white outline-none bg-slate-50/50 dark:bg-slate-900/50 px-4 py-3 rounded-2xl border border-transparent focus:bg-white dark:focus:bg-slate-800 focus:border-blue-200 dark:focus:border-blue-800 focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/50 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-300 font-outfit"
           placeholder="What's on your mind?"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
@@ -83,7 +83,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
       </div>
 
       {/* ── PRIORITY + COLOR side by side ── */}
-      <div className="grid grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-1 xs:grid-cols-2 gap-4 lg:gap-6 mb-5">
 
         {/* Priority */}
         <div>

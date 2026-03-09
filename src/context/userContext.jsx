@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import axiosInstance from "../utils/axiosInstance";
 
 export const UserContext = createContext(null);
@@ -7,7 +7,7 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const checkUser = async () => {
+    const checkUser = useCallback(async () => {
         const token = localStorage.getItem("token");
         if (!token) {
             setLoading(false);
@@ -25,14 +25,21 @@ export const UserProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         checkUser();
-    }, []);
+    }, [checkUser]);
+
+    const contextValue = useMemo(() => ({ 
+        user, 
+        setUser, 
+        loading, 
+        checkUser 
+    }), [user, loading, checkUser]);
 
     return (
-        <UserContext.Provider value={{ user, setUser, loading, checkUser }}>
+        <UserContext.Provider value={contextValue}>
             {children}
         </UserContext.Provider>
     );
