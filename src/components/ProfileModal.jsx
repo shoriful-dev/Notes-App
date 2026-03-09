@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 const ProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
   const [username, setUsername] = useState(user?.username || '');
   const [avatar, setAvatar] = useState(user?.avatar || '');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -16,6 +17,19 @@ const ProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
     }
   }, [user]);
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      // Create a preview URL for the selected file
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleUpdate = async () => {
     if (!username.trim()) {
       toast.error('Username is required');
@@ -24,9 +38,19 @@ const ProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
 
     setLoading(true);
     try {
-      const response = await axiosInstance.put('/auth/update-profile', {
-        username,
-        avatar
+      const formData = new FormData();
+      formData.append('username', username);
+      
+      if (selectedFile) {
+        formData.append('avatar', selectedFile);
+      } else {
+        formData.append('avatar', avatar);
+      }
+
+      const response = await axiosInstance.put('/auth/update-profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       if (response.data.success) {
@@ -85,14 +109,21 @@ const ProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
             <div className="p-8 space-y-8">
               {/* Avatar Selection */}
               <div className="space-y-4">
-                <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  <Camera size={14} className="text-blue-500 dark:text-blue-400" /> Choose Avatar
-                </label>
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                    <Camera size={14} className="text-blue-500 dark:text-blue-400" /> Choose Avatar
+                  </label>
+                  <span className="text-[10px] font-bold text-slate-400 italic">Presets or Custom URL</span>
+                </div>
+                
                 <div className="grid grid-cols-3 gap-4">
                   {avatars.map((url) => (
                     <button
                       key={url}
-                      onClick={() => setAvatar(url)}
+                      onClick={() => {
+                        setAvatar(url);
+                        setSelectedFile(null);
+                      }}
                       className={`relative aspect-square rounded-2xl overflow-hidden border-2 transition-all group ${
                         avatar === url 
                         ? 'border-blue-500 shadow-lg shadow-blue-100 dark:shadow-none ring-4 ring-blue-50 dark:ring-blue-900/30' 
@@ -110,6 +141,48 @@ const ProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
                     </button>
                   ))}
                 </div>
+
+                {/* Custom URL Input */}
+                <div className="mt-4 space-y-3">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={!avatars.includes(avatar) && !selectedFile ? avatar : ''}
+                      onChange={(e) => {
+                        setAvatar(e.target.value);
+                        setSelectedFile(null);
+                      }}
+                      placeholder="Or paste custom image URL here..."
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl px-5 py-3 text-sm font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm dark:shadow-none"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="file"
+                      id="avatar-upload"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="avatar-upload"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-600 dark:text-slate-400 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-sm dark:shadow-none active:scale-[0.98]"
+                    >
+                      <Camera size={16} />
+                      Choose from Computer
+                    </label>
+                  </div>
+                  
+                  {selectedFile && (
+                    <p className="text-[10px] text-green-600 dark:text-green-400 font-bold mt-2 ml-1 flex items-center gap-1">
+                      <Check size={10} strokeWidth={4} /> Local file selected: {selectedFile.name}
+                    </p>
+                  )}
+                  {!avatars.includes(avatar) && avatar && !selectedFile && (
+                    <p className="text-[10px] text-blue-600 dark:text-blue-400 font-bold mt-2 ml-1">✓ Custom URL selected</p>
+                  )}
+                </div>
               </div>
 
               {/* Username Input */}
@@ -123,7 +196,7 @@ const ProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="e.g. John Doe"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl px-5 py-4 text-slate-900 dark:text-white font-bold placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl px-5 py-4 text-slate-900 dark:text-white font-bold placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm dark:shadow-none"
                   />
                 </div>
               </div>

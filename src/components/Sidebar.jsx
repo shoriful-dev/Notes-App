@@ -15,7 +15,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 
-const Sidebar = ({ user, onLogout, activeTab, setActiveTab }) => {
+const Sidebar = ({ user, onLogout, activeTab, setActiveTab, onEditProfile }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const navigate = useNavigate();
 
@@ -120,7 +120,7 @@ const Sidebar = ({ user, onLogout, activeTab, setActiveTab }) => {
                                 <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                             ) : (
                                 <div className="w-full h-full bg-blue-50 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">
-                                    {user?.fullName?.slice(0, 2).toUpperCase() || 'UN'}
+                                    {user?.username?.slice(0, 2).toUpperCase() || 'UN'}
                                 </div>
                             )}
                         </div>

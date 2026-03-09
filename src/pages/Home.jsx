@@ -10,7 +10,7 @@ import {
   FileText, Plus, Pin, BookOpen,
   Sparkles, LayoutGrid, List, Clock,
   TrendingUp, Tag, Search, Filter,
-  ArrowRight, MousePointer2
+  ArrowRight, MousePointer2, User
 } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from "../components/Sidebar";
@@ -167,8 +167,8 @@ const Home = () => {
         {/* Top toolbar */}
         <header className="h-24 px-8 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl sticky top-0 z-30 transition-colors duration-300">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight font-outfit transition-colors duration-300">
-              {getGreeting()}, <span className="text-blue-600 dark:text-blue-400">{user?.fullName?.split(' ')[0] || 'there'}!</span>
+            <h1 className="text-2xl font-black text-slate-800 dark:text-white transition-colors">
+              {getGreeting()}, <span className="text-blue-600 dark:text-blue-400">{user?.username?.split(' ')[0] || 'there'}!</span>
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <Sparkles size={14} className="text-amber-500" />
@@ -198,6 +198,13 @@ const Home = () => {
               title={viewMode === 'grid' ? 'Switch to List' : 'Switch to Grid'}
             >
               {viewMode === 'grid' ? <List size={18} /> : <LayoutGrid size={18} />}
+            </button>
+
+            <button 
+              onClick={() => setIsProfileModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-sm dark:shadow-none active:scale-95"
+            >
+              <User size={18} /> Edit Profile
             </button>
 
             <motion.button
