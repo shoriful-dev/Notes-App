@@ -47,7 +47,27 @@ NotesApp is a professional, high-performance note-taking workspace designed for 
 
 ---
 
-## 📦 Getting Started
+## 🚀 Deployment Guide (Vercel)
+
+For a successful MERN deployment on Vercel, follow this specific order:
+
+### Phase 1: Deploy Backend (API)
+1.  **Create New Project** on Vercel and point it to the `backend` folder.
+2.  **Add Environment Variables**:
+    - `MONGODB_URI`
+    - `ACCESS_TOKEN_SECRET`
+    - `SESSION_SECRET`
+3.  **Deploy**. Once finished, copy the **Production URL** (e.g., `https://your-api.vercel.app`).
+
+### Phase 2: Deploy Frontend (UI)
+1.  **Create New Project** on Vercel and point it to the `frontend` folder.
+2.  **Add Environment Variables**:
+    - `VITE_API_BASE_URL`: Paste your **Backend Production URL** here.
+3.  **Deploy**. Your frontend is now connected to your live API.
+
+---
+
+## 📦 Local Development
 
 ### Prerequisites
 - Node.js (v18+)
