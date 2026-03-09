@@ -1,14 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;700;900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 @theme {
   --font-inter: "Inter", sans-serif;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --font-outfit: "Outfit", sans-serif;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -18,47 +21,70 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: #fbfcfd;
-  --foreground: #1a1c1e;
+  --background: #f8fafc;
+  --foreground: #0f172a;
   --primary: #2563eb;
   --primary-foreground: #ffffff;
-  --accent: #f0f9ff;
+  --accent: #eff6ff;
   --border: #e2e8f0;
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border selection:bg-blue-100 selection:text-blue-900;
   }
+
   body {
     font-family: var(--font-inter);
-    @apply bg-[#f8fafc] text-slate-900 antialiased;
+    @apply bg-background text-foreground antialiased;
+  }
+
+  /* Custom Premium Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-all duration-200 shadow-sm active:scale-95 disabled:opacity-50;
+    @apply bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-all duration-300 shadow-lg shadow-blue-200 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2;
   }
 
   .icon-btn {
-    @apply text-xl text-slate-400 cursor-pointer hover:text-blue-600 transition-all duration-200 p-1 rounded-full hover:bg-slate-100;
+    @apply p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 active:scale-95;
   }
 
   .input-label {
-    @apply text-[11px] font-bold text-slate-400 tracking-wider mb-1;
+    @apply text-[11px] font-black text-slate-400 tracking-widest uppercase mb-1.5;
   }
 
-  .card-shadow {
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-xl shadow-slate-200/40;
   }
 
-  .card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  .premium-shadow {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 4px 10px -5px rgba(0, 0, 0, 0.02);
   }
 
-  .glass {
-    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  .premium-hover {
+    @apply transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100/40 hover:-translate-y-1;
+  }
+
+  .card-indicator {
+    @apply absolute top-0 left-0 w-1 h-0 group-hover:h-full transition-all duration-500;
+  }
+}
+
+@layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #e2e8f0 transparent;
   }
 }

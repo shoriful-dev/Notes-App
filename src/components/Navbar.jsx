@@ -1,28 +1,26 @@
-import { BookOpen, LogOut, User as UserIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import { BookOpen, LogOut, Search, User } from 'lucide-react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { getData } from '@/context/userContext'
-import axios from 'axios'
-import { toast } from 'sonner'
 import SearchBar from './SearchBar/SearchBar'
-import { getInitials } from '@/utils/helper'
+import UserContext from '../context/userContext'
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const Navbar = ({ onSearchNote, handleClearSearch }) => {
-    const {user, setUser} = getData()
     const [searchQuery, setSearchQuery] = useState("");
+    const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
 
     const onLogout = () => {
-        localStorage.clear();
+        localStorage.removeItem("token");
         setUser(null);
         navigate("/login");
     };
@@ -37,18 +35,20 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
         setSearchQuery("");
         handleClearSearch();
     };
-    
+
     return (
         <nav className='bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50 py-3 px-6'>
             <div className='max-w-7xl mx-auto flex justify-between items-center gap-6'>
                 {/* logo section  */}
-                <div className='flex gap-2.5 items-center shrink-0 mb-3'>
-                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-                        <BookOpen className='h-6 w-6 text-white' />
-                    </div>
-                    <h1 className='font-bold text-xl tracking-tight text-slate-900'>
-                        Notes<span className='text-blue-600'>App</span>
-                    </h1>
+                <div className='flex gap-2.5 items-center shrink-0'>
+                    <Link to="/" className="flex gap-2.5 items-center">
+                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                            <BookOpen className='h-6 w-6 text-white' />
+                        </div>
+                        <h1 className='font-bold text-xl tracking-tight text-slate-900'>
+                            Notes<span className='text-blue-600'>App</span>
+                        </h1>
+                    </Link>
                 </div>
 
                 <div className="flex-1 max-w-xl hidden md:block">
@@ -63,45 +63,67 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
                 </div>
 
                 <div className='flex gap-5 items-center shrink-0'>
-                    {
-                        user ? (
-                            <div className="flex items-center gap-4">
-                                <div className="hidden lg:block text-right">
-                                    <p className="text-sm font-semibold text-slate-900 leading-tight">{user?.username}</p>
-                                    <p className="text-[11px] text-slate-400 font-medium">Capture ideas</p>
-                                </div>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="outline-none">
-                                        <Avatar className="w-10 h-10 border-2 border-slate-100 hover:border-blue-400 transition-all cursor-pointer">
-                                            <AvatarImage src={user?.avatar} />
-                                            <AvatarFallback className="bg-blue-50 text-blue-600 font-bold text-sm">{getInitials(user?.username)}</AvatarFallback>
-                                        </Avatar>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className="w-56 mt-2 rounded-xl p-2 shadow-2xl border-slate-100">
-                                        <DropdownMenuLabel className="px-3 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Account</DropdownMenuLabel>
-                                        <DropdownMenuSeparator className="bg-slate-50" />
-                                        <DropdownMenuItem className="rounded-lg py-2.5 cursor-pointer focus:bg-slate-50">
-                                            <UserIcon className="w-4 h-4 mr-3 text-slate-400"/>
-                                            <span className="font-medium text-slate-700">Profile</span>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator className="bg-slate-50" />
-                                        <DropdownMenuItem onClick={onLogout} className="rounded-lg py-2.5 cursor-pointer focus:bg-red-50 focus:text-red-600 text-red-500">
-                                            <LogOut className="w-4 h-4 mr-3"/>
-                                            <span className="font-medium">Logout</span>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        ) : (
-                            <Link to={'/login'} className="btn-primary py-2 px-6 rounded-xl">Login</Link>
-                        )
-                    }
+                    {user ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="relative h-10 w-10 rounded-xl border-2 border-slate-100 hover:border-blue-400 p-0 overflow-hidden transition-all">
+                                    <Avatar className="h-10 w-10 rounded-xl">
+                                        <AvatarImage src={user.avatar} alt={user.username} />
+                                        <AvatarFallback className="bg-blue-50 text-blue-600 font-bold uppercase rounded-xl">
+                                            {user.username?.slice(0, 2)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56 mt-2 rounded-2xl p-2 border-slate-100 shadow-xl" align="end" forceMount>
+                                <DropdownMenuLabel className="font-normal p-2">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-bold leading-none text-slate-900">{user.username}</p>
+                                        <p className="text-xs leading-none text-slate-500 truncate mt-1">
+                                            {user.email}
+                                        </p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator className="bg-slate-50" />
+                                <DropdownMenuItem 
+                                    className="p-2.5 rounded-xl cursor-pointer hover:bg-slate-50 focus:bg-slate-50 text-slate-600 hover:text-blue-600 transition-colors"
+                                    onClick={() => navigate('/dashboard')}
+                                >
+                                    <Search className="mr-2 h-4 w-4" />
+                                    <span>My Notes</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                    className="p-2.5 rounded-xl cursor-pointer hover:bg-red-50 focus:bg-red-50 text-slate-600 hover:text-red-600 transition-colors"
+                                    onClick={onLogout}
+                                >
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Logout</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <div className="flex gap-3">
+                            <Button 
+                                variant="ghost" 
+                                className="font-bold text-slate-600 hover:text-blue-600 rounded-xl"
+                                onClick={() => navigate('/login')}
+                            >
+                                Login
+                            </Button>
+                            <Button 
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl px-6 shadow-lg shadow-blue-200"
+                                onClick={() => navigate('/signup')}
+                            >
+                                Sign Up
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
-            
+
             {/* Mobile Search - Single row visible on mobile only */}
             <div className="md:hidden mt-4 pb-1 group">
-                 <SearchBar
+                <SearchBar
                     value={searchQuery}
                     onChange={({ target }) => {
                         setSearchQuery(target.value);
@@ -114,4 +136,4 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
     )
 }
 
-export default Navbar
+export default Navbar;

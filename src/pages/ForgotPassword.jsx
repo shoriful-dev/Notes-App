@@ -17,22 +17,22 @@ const ForgotPassword = () => {
     const [isSubmitted, setIsSubmitted] = useState(false)
     const navigate = useNavigate()
 
-    const handleForgotPassword = async (e)=>{
+    const handleForgotPassword = async (e) => {
         e.preventDefault()
         try {
             setIsLoading(true)
             const res = await axios.post(`http://localhost:8000/auth/forgot-password`, {
                 email
             });
-            if(res.data.success){
-             navigate(`/verify-otp/${email}`)
-             toast.success(res.data.message)
-             setEmail("")
+            if (res.data.success) {
+                navigate(`/verify-otp/${email}`)
+                toast.success(res.data.message)
+                setEmail("")
             }
         } catch (error) {
             console.log(error);
-            
-        } finally{
+
+        } finally {
             setIsLoading(false)
         }
     }

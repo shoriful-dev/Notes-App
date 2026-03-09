@@ -3,121 +3,149 @@ import TagInput from "./Input/TagInput";
 import { MdClose } from "react-icons/md";
 import axiosInstance from "../utils/axiosInstance";
 
-const AddEditNotes = ({ noteData, type, getAllNotes, onClose, showToastMsg }) => {
-  const [title, setTitle] = useState(noteData?.title || "");
-  const [content, setContent] = useState(noteData?.content || "");
-  const [tags, setTags] = useState(noteData?.tags || []);
-  const [error, setError] = useState(null);
+// ── colour config ─────────────────────────────────────────────────────────────
+const COLORS = [
+  { key: "default", label: "None",   dot: "bg-slate-200",  ring: "ring-slate-300" },
+  { key: "red",     label: "Red",    dot: "bg-red-400",    ring: "ring-red-400"   },
+  { key: "orange",  label: "Orange", dot: "bg-orange-400", ring: "ring-orange-400"},
+  { key: "yellow",  label: "Yellow", dot: "bg-yellow-400", ring: "ring-yellow-400"},
+  { key: "green",   label: "Green",  dot: "bg-green-400",  ring: "ring-green-400" },
+  { key: "blue",    label: "Blue",   dot: "bg-blue-400",   ring: "ring-blue-400"  },
+  { key: "purple",  label: "Purple", dot: "bg-purple-400", ring: "ring-purple-400"},
+];
 
-  // Add Note
+const PRIORITIES = [
+  { key: "low",    label: "Low",    badge: "bg-slate-100 text-slate-600 border-slate-200"  },
+  { key: "medium", label: "Medium", badge: "bg-amber-50  text-amber-700  border-amber-200" },
+  { key: "high",   label: "High",   badge: "bg-red-50    text-red-700    border-red-200"   },
+];
+
+// ── Component ─────────────────────────────────────────────────────────────────
+const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
+  const [title,    setTitle]    = useState(noteData?.title    || "");
+  const [content,  setContent]  = useState(noteData?.content  || "");
+  const [tags,     setTags]     = useState(noteData?.tags     || []);
+  const [color,    setColor]    = useState(noteData?.color    || "default");
+  const [priority, setPriority] = useState(noteData?.priority || "medium");
+  const [error,    setError]    = useState(null);
+
+  const payload = { title, content, tags, color, priority };
+
   const addNewNote = async () => {
     try {
-      const response = await axiosInstance.post("/note/add", {
-        title,
-        content,
-        tags,
-      });
-
-      if (response.data && response.data.note) {
-        showToastMsg && showToastMsg("Note Added Successfully");
-        getAllNotes();
-        onClose();
-      }
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setError(error.response.data.message);
-      }
+      const r = await axiosInstance.post("/note/add", payload);
+      if (r.data?.note) { getAllNotes(); onClose(); }
+    } catch (e) {
+      if (e.response?.data?.message) setError(e.response.data.message);
     }
   };
 
-  // Edit Note
   const editNote = async () => {
-    const noteId = noteData._id;
-
     try {
-      const response = await axiosInstance.put("/note/edit/" + noteId, {
-        title,
-        content,
-        tags,
-      });
-
-      if (response.data && response.data.note) {
-        showToastMsg && showToastMsg("Note Updated Successfully");
-        getAllNotes();
-        onClose();
-      }
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setError(error.response.data.message);
-      }
+      const r = await axiosInstance.put("/note/edit/" + noteData._id, payload);
+      if (r.data?.note) { getAllNotes(); onClose(); }
+    } catch (e) {
+      if (e.response?.data?.message) setError(e.response.data.message);
     }
   };
 
-  const handleAddNote = () => {
-    if (!title) {
-      setError("Please enter the title");
-      return;
-    }
-
-    if (!content) {
-      setError("Please enter the content");
-      return;
-    }
-
+  const handleSubmit = () => {
+    if (!title)   { setError("Please enter a title");   return; }
+    if (!content) { setError("Please enter the content"); return; }
     setError("");
-
-    if (type === "edit") {
-      editNote();
-    } else {
-      addNewNote();
-    }
+    type === "edit" ? editNote() : addNewNote();
   };
 
   return (
     <div className="relative">
-      <div className="flex flex-col gap-2">
-        <label className="input-label">TITLE</label>
+
+      {/* ── TITLE ── */}
+      <div className="flex flex-col gap-2 mb-6">
+        <label className="input-label tracking-widest">NOTE TITLE</label>
         <input
           type="text"
-          className="text-2xl text-slate-950 outline-none bg-slate-50/50 p-2 rounded-lg border-transparent focus:border-blue-100 border transition-all"
+          className="text-3xl font-black text-slate-900 outline-none bg-slate-50/50 px-4 py-3 rounded-2xl border border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-100/50 transition-all duration-300 font-outfit"
           placeholder="What's on your mind?"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
         />
       </div>
 
-      <div className="flex flex-col gap-2 mt-4">
-        <label className="input-label">CONTENT</label>
+      {/* ── CONTENT ── */}
+      <div className="flex flex-col gap-2 mb-6">
+        <label className="input-label tracking-widest">DESCRIPTION</label>
         <textarea
-          type="text"
-          className="text-sm text-slate-950 outline-none bg-slate-50/50 p-4 rounded-xl border-transparent focus:border-blue-100 border transition-all resize-none"
-          placeholder="Details..."
-          rows={10}
+          className="text-[15px] font-medium text-slate-600 outline-none bg-slate-50/50 p-4 rounded-2xl border border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-100/50 transition-all duration-300 resize-none leading-relaxed min-h-[180px]"
+          placeholder="Start writing..."
           value={content}
           onChange={({ target }) => setContent(target.value)}
         />
       </div>
 
-      <div className="mt-4">
-        <label className="input-label">TAGS</label>
+      {/* ── PRIORITY + COLOR side by side ── */}
+      <div className="grid grid-cols-2 gap-4 mb-5">
+
+        {/* Priority */}
+        <div>
+          <label className="input-label mb-2 block tracking-widest">PRIORITY</label>
+          <div className="flex gap-2 p-1 bg-slate-50 rounded-xl border border-slate-100">
+            {PRIORITIES.map((p) => (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => setPriority(p.key)}
+                className={`flex-1 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all duration-300 ${
+                  priority === p.key
+                    ? "bg-white text-blue-600 shadow-sm border border-slate-100 scale-105"
+                    : "text-slate-400 hover:text-slate-600"
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Color */}
+        <div>
+          <label className="input-label mb-2 block tracking-widest">TAG COLOR</label>
+          <div className="flex gap-2.5 flex-wrap items-center pt-1">
+            {COLORS.map((c) => (
+              <button
+                key={c.key}
+                type="button"
+                title={c.label}
+                onClick={() => setColor(c.key)}
+                className={`w-5 h-5 rounded-full ${c.dot} transition-all duration-300 relative ${
+                  color === c.key
+                    ? `ring-4 ring-offset-0 ring-blue-100 scale-125 z-10 shadow-sm`
+                    : "hover:scale-125 opacity-70 hover:opacity-100"
+                }`}
+              >
+                {color === c.key && <div className="absolute inset-0 border border-white/20 rounded-full" />}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── TAGS ── */}
+      <div className="mb-5">
+        <label className="input-label mb-2 block">TAGS</label>
         <TagInput tags={tags} setTags={setTags} />
       </div>
 
-      {error && <p className="text-red-500 text-xs pt-4 font-medium">{error}</p>}
+      {/* ── ERROR ── */}
+      {error && (
+        <p className="text-red-500 text-xs font-semibold mb-4">⚠ {error}</p>
+      )}
 
+      {/* ── SUBMIT ── */}
       <button
-        className="btn-primary w-full mt-7 text-lg py-3 rounded-xl shadow-blue-100"
-        onClick={handleAddNote}
+        className="btn-primary w-full py-3 text-base rounded-xl"
+        onClick={handleSubmit}
       >
-        {type === "edit" ? "Update Note" : "Add Note"}
+        {type === "edit" ? "Save Changes" : "Add Note"}
       </button>
     </div>
   );

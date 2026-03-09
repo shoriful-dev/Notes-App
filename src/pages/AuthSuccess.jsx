@@ -1,42 +1,46 @@
-import { getData } from '@/context/userContext'
-import axios from 'axios'
+import { getData } from '../context/userContext'
+import axiosInstance from '../utils/axiosInstance'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const AuthSuccess = () => {
     const { setUser } = getData()
     const navigate = useNavigate()
+    
     useEffect(() => {
-
         const handleAuth = async () => {
             const params = new URLSearchParams(window.location.search)
-            console.log(params);
             const accessToken = params.get("token")
-            console.log("Token", accessToken);
 
             if (accessToken) {
-                localStorage.setItem("accessToken", accessToken)
+                localStorage.setItem("token", accessToken)
                 try {
-                    const res = await axios.get("http://localhost:8000/auth/me", {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
-                    })
+                    const res = await axiosInstance.get("/auth/me")
                     if (res.data.success) {
-                        setUser(res.data.user)  //save user in context api store
-                        navigate("/")
+                        setUser(res.data.user)
+                        navigate("/dashboard")
+                    } else {
+                        navigate("/login")
                     }
                 } catch (error) {
                     console.error("Error fetching user:", error)
+                    navigate("/login")
                 }
+            } else {
+                navigate("/login")
             }
         }
         handleAuth()
-    }, [navigate])
+    }, [navigate, setUser])
+
     return (
-        <h2>
-            Logging in...
-        </h2>
+        <div className="flex items-center justify-center min-h-screen bg-slate-50">
+            <div className="flex flex-col items-center gap-4">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                <h2 className="text-xl font-bold text-slate-800 tracking-tight">Logging in...</h2>
+                <p className="text-slate-500 font-medium animate-pulse">Please wait while we set up your session</p>
+            </div>
+        </div>
     )
 }
 

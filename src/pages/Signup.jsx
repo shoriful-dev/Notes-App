@@ -1,165 +1,148 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Loader2, BookOpen } from 'lucide-react';
-import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import PasswordInput from "../components/Input/PasswordInput";
+import axiosInstance from "../utils/axiosInstance";
+import { toast } from "sonner";
+import UserContext from "../context/userContext";
+import { BookOpen, UserPlus, Mail, User as UserIcon } from "lucide-react";
 
 const Signup = () => {
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const { setUser } = useContext(UserContext);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+    const navigate = useNavigate();
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    try {
-      setIsLoading(true);
-      const res = await axios.post(
-        `http://localhost:8000/auth/register`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      if (res.data.success) {
-        navigate('/verify');
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  return (
-    <div className="relative w-full min-h-screen bg-slate-50 overflow-hidden font-inter">
-      <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-           <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto shadow-xl shadow-blue-100 mb-6">
-              <BookOpen className='h-8 w-8 text-white' />
-           </div>
-           <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
-             Create your account
-           </h2>
-           <p className="mt-2 text-center text-sm text-slate-500">
-             Start organizing your thoughts and ideas today
-           </p>
-        </div>
+    const handleSignup = async (e) => {
+        e.preventDefault();
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow-2xl shadow-slate-200/50 sm:rounded-2xl sm:px-10 border border-slate-100">
-            <Card className="w-full max-w-sm">
-              <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl text-center text-green-600">
-                  Sign up
-                </CardTitle>
-                <CardDescription className="text-center">
-                  Create your account to get started with Notes App
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col gap-6">
-                  <div className="grid gap-2">
-                    <Label htmlFor="full name">Full Name</Label>
-                    <Input
-                      id="full name"
-                      name="username"
-                      value={formData.username}
-                      onChange={handleChange}
-                      type="text"
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="m@example.com"
-                      required
-                    />
-                  </div>
+        if (!username) {
+            setError("Please enter your name");
+            return;
+        }
 
-                  <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        type={showPassword ? 'text' : 'password'}
-                        required
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowPassword(!showPassword)}
-                        disabled={isLoading}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="w-4 h-4 text-gray-600" />
-                        ) : (
-                          <Eye className="w-4 h-4 text-gray-600" />
-                        )}
-                      </Button>
+        if (!email) {
+            setError("Please enter your email");
+            return;
+        }
+
+        if (!password) {
+            setError("Please enter your password");
+            return;
+        }
+
+        setError("");
+        setIsLoading(true);
+
+        try {
+            const response = await axiosInstance.post("/auth/register", {
+                username: username,
+                email: email,
+                password: password,
+            });
+
+            if (response.data && response.data.token) {
+                localStorage.setItem("token", response.data.token);
+                setUser(response.data.user);
+                toast.success("Account created successfully!");
+                navigate("/dashboard");
+            }
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                setError(error.response.data.message);
+                toast.error(error.response.data.message);
+            } else {
+                setError("Something went wrong");
+                toast.error("Internal Server Error");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-[#f8fafc] p-4">
+            <div className="max-w-md w-full">
+                {/* Logo & Header */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-xl shadow-blue-100 mb-4">
+                        <BookOpen className="h-8 w-8 text-white" />
                     </div>
-                  </div>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Create Account</h1>
+                    <p className="text-slate-500 mt-2 font-medium">Join us to start managing your notes better</p>
                 </div>
-              </CardContent>
-              <CardFooter className="flex-col gap-2">
-                <Button
-                  onClick={handleSubmit}
-                  type="submit"
-                  className="w-full bg-green-600 hover:bg-green-500"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating account..
-                    </>
-                  ) : (
-                    'Signup'
-                  )}
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
+
+                {/* Card */}
+                <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                    <div className="p-8">
+                        <form onSubmit={handleSignup} className="space-y-5">
+                            <div className="space-y-2">
+                                <label className="input-label flex items-center gap-2">
+                                    <UserIcon className="h-3 w-3" /> FULL NAME
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter your name"
+                                    className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="input-label flex items-center gap-2">
+                                    <Mail className="h-3 w-3" /> EMAIL ADDRESS
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter your email"
+                                    className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="input-label flex items-center gap-2">
+                                    PASSWORD
+                                </label>
+                                <PasswordInput
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+
+                            {error && <p className="text-red-500 text-sm font-bold bg-red-50 p-3 rounded-xl animate-shake">{error}</p>}
+
+                            <button 
+                                type="submit" 
+                                disabled={isLoading}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl py-4 font-bold shadow-lg shadow-blue-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70"
+                            >
+                                {isLoading ? "Creating account..." : (
+                                    <>
+                                        <UserPlus className="h-5 w-5" /> Sign Up
+                                    </>
+                                )}
+                            </button>
+                        </form>
+                    </div>
+
+                    <div className="p-6 bg-slate-50 border-t border-slate-100 text-center">
+                        <p className="text-sm text-slate-500 font-medium">
+                            Already have an account?{" "}
+                            <Link to="/login" className="text-blue-600 font-bold hover:underline">
+                                Sign In
+                            </Link>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Signup;

@@ -1,62 +1,47 @@
-import React from 'react'
-import {createBrowserRouter, RouterProvider} from "react-router-dom"
-import Home from './pages/Home'
-import Signup from './pages/Signup'
-import Login from './pages/Login'
-import VerifyEmail from './pages/VerifyEmail'
-import Verify from './pages/Verify'
-import Navbar from './components/Navbar'
-import ProtectedRoute from './components/ProtectedRoute'
-import ForgotPassword from './pages/ForgotPassword'
-import VerifyOTP from './pages/VerifyOTP'
-import ChangePassword from './pages/ChangePassword'
-import AuthSuccess from './pages/AuthSuccess'
-
-const router = createBrowserRouter([
-  {
-    path:'/',
-    element:<Home/>
-  },
-  {
-    path:'/signup',
-    element:<Signup/>
-  },
-  {
-    path:'/verify',
-    element:<VerifyEmail/>
-  },
-  {
-    path:'/verify/:token',
-    element:<Verify/>
-  },
-  {
-    path:'/login',
-    element:<Login/>
-  },
-  {
-    path:'/auth-success',
-    element:<AuthSuccess/>
-  },
-  {
-    path:'/forgot-password',
-    element:<ForgotPassword/>
-  },
-  {
-    path:'/verify-otp/:email',
-    element:<VerifyOTP/>
-  },
-  {
-    path:'/change-password/:email',
-    element:<ChangePassword/>
-  },
-])
+import React, { useContext } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
+import UserContext from "./context/userContext";
+import Landing from "./pages/Landing";
+import AuthSuccess from "./pages/AuthSuccess";
 
 const App = () => {
-  return (
-    <div>
-      <RouterProvider router={router}/>
-    </div>
-  )
-}
+    const { user, loading } = useContext(UserContext);
 
-export default App
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-slate-50">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                    <p className="text-sm font-medium text-slate-500">Checking your session...</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <Home />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/auth-success" element={<AuthSuccess />} />
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </Router>
+    );
+};
+
+
+export default App;
