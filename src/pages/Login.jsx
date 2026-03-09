@@ -65,8 +65,8 @@ const Login = () => {
             <div className="max-w-md w-full">
                 {/* Logo & Header */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-xl shadow-blue-100 dark:shadow-none mb-4">
-                        <BookOpen className="h-8 w-8 text-white" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-blue-100 dark:shadow-none mb-4 border border-slate-100 dark:border-slate-800 overflow-hidden">
+                        <img src="/logo.png" alt="NotesApp Logo" className="w-12 h-12 object-contain" />
                     </div>
                     <h1 className="text-3xl font-black text-foreground tracking-tight">Welcome Back</h1>
                     <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">To keep connected with us please login</p>

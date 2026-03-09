@@ -53,8 +53,8 @@ const SidebarContent = ({
                         exit={{ opacity: 0, x: -10 }}
                     >
                         <Link to="/" className="flex items-center gap-3 group/logo">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-100 dark:shadow-none group-hover/logo:shadow-blue-200 dark:group-hover/logo:shadow-none transition-all duration-300 group-hover/logo:-rotate-6">
-                                <BookOpen className="w-5 h-5 text-white" />
+                            <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-blue-100 dark:shadow-none border border-slate-100 dark:border-slate-800 group-hover/logo:border-blue-200 dark:group-hover/logo:border-blue-800 transition-all duration-300 group-hover/logo:-rotate-6 overflow-hidden">
+                                <img src="/logo.png" alt="NotesApp Logo" className="w-8 h-8 object-contain" />
                             </div>
                             <span className="font-bold text-xl text-slate-900 dark:text-white tracking-tight font-outfit group-hover/logo:text-blue-600 dark:group-hover/logo:text-blue-400 transition-colors">
                                 Notes<span className="text-blue-600 dark:text-blue-500">App</span>

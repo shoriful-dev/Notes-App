@@ -1,4 +1,4 @@
-# NotesApp — Premium Full-Stack Note-Taking Solution
+# <img src="./public/logo.png" width="40" height="40" align="center" /> NotesApp — Premium Full-Stack Note-Taking Solution
 
 ![NotesApp Home Preview](./public/home-preview.png)
 

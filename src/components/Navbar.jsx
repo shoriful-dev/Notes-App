@@ -41,12 +41,12 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
             <div className='max-w-7xl mx-auto flex justify-between items-center gap-6'>
                 {/* logo section  */}
                 <div className='flex gap-2.5 items-center shrink-0'>
-                    <Link to="/" className="flex gap-2.5 items-center">
-                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none">
-                            <BookOpen className='h-6 w-6 text-white' />
+                    <Link to="/" className="flex gap-2.5 items-center group/logo">
+                        <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-blue-100 dark:shadow-none border border-slate-100 dark:border-slate-800 group-hover/logo:border-blue-200 dark:group-hover/logo:border-blue-800 transition-all duration-300 overflow-hidden">
+                            <img src="/logo.png" alt="NotesApp Logo" className="w-8 h-8 object-contain" />
                         </div>
-                        <h1 className='font-bold text-xl tracking-tight text-slate-900'>
-                            Notes<span className='text-blue-600'>App</span>
+                        <h1 className='font-bold text-xl tracking-tight text-slate-900 dark:text-white font-outfit'>
+                            Notes<span className='text-blue-600 dark:text-blue-500'>App</span>
                         </h1>
                     </Link>
                 </div>

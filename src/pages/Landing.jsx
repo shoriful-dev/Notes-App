@@ -139,12 +139,14 @@ const Landing = () => {
             {/* === NAV === */}
             <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-6 h-16 lg:h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none">
-                            <BookOpen className="w-5 h-5 text-white" />
+                    <Link to="/" className="flex items-center gap-3 shrink-0 group/logo">
+                        <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-blue-100 dark:shadow-none border border-slate-100 dark:border-slate-800 group-hover/logo:border-blue-300 dark:group-hover/logo:border-blue-700 transition-all duration-300 overflow-hidden">
+                            <img src="/logo.png" alt="NotesApp Logo" className="w-8 h-8 object-contain" />
                         </div>
-                        <span className="font-bold text-lg text-foreground">Notes<span className="text-blue-600">App</span></span>
-                    </div>
+                        <span className="text-xl font-bold text-foreground tracking-tight group-hover/logo:text-blue-400 transition-colors">
+                            Notes<span className="text-blue-600">App</span>
+                        </span>
+                    </Link>
 
                     <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-400">
                         {navLinks.map(link => (
