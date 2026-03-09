@@ -42,7 +42,7 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
                 {/* logo section  */}
                 <div className='flex gap-2.5 items-center shrink-0'>
                     <Link to="/" className="flex gap-2.5 items-center">
-                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none">
                             <BookOpen className='h-6 w-6 text-white' />
                         </div>
                         <h1 className='font-bold text-xl tracking-tight text-slate-900'>
@@ -75,7 +75,7 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
                                     </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56 mt-2 rounded-2xl p-2 border-slate-100 shadow-xl" align="end" forceMount>
+                            <DropdownMenuContent className="w-56 mt-2 rounded-2xl p-2 border-slate-100 dark:border-slate-800 shadow-xl dark:shadow-none bg-white dark:bg-slate-900" align="end" forceMount>
                                 <DropdownMenuLabel className="font-normal p-2">
                                     <div className="flex flex-col space-y-1">
                                         <p className="text-sm font-bold leading-none text-slate-900">{user.username}</p>
@@ -111,7 +111,7 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
                                 Login
                             </Button>
                             <Button 
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl px-6 shadow-lg shadow-blue-200"
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl px-6 shadow-lg shadow-blue-200 dark:shadow-none"
                                 onClick={() => navigate('/signup')}
                             >
                                 Sign Up

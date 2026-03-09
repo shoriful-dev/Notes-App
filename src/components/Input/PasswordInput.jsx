@@ -18,7 +18,7 @@ const PasswordInput = ({ value, onChange, placeholder }) => {
                 onChange={onChange}
                 type={isShowPassword ? "text" : "password"}
                 placeholder={placeholder || "Password"}
-                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-12 py-4 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-2xl pl-12 pr-12 py-4 text-foreground placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
             />
 
             {isShowPassword ? (

@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import UserContext from "./context/userContext";
 import Landing from "./pages/Landing";
 import AuthSuccess from "./pages/AuthSuccess";
+import ThemeToggle from "./components/ThemeToggle";
 
 const App = () => {
     const { user, loading } = useContext(UserContext);
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="/auth-success" element={<AuthSuccess />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
+            <ThemeToggle />
         </Router>
     );
 };

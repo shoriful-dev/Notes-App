@@ -154,7 +154,7 @@ const Home = () => {
 
   // ── render ───────────────────────────────────────────────────────────────────
   return (
-    <div className="flex min-h-screen bg-[#fafbfc] selection:bg-blue-100 selection:text-blue-900">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 dark:selection:text-blue-100">
       <Sidebar 
           user={user} 
           onLogout={onLogout} 
@@ -165,14 +165,14 @@ const Home = () => {
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top toolbar */}
-        <header className="h-24 px-8 flex items-center justify-between border-b border-slate-100 bg-white/70 backdrop-blur-xl sticky top-0 z-30">
+        <header className="h-24 px-8 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl sticky top-0 z-30 transition-colors duration-300">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight font-outfit">
-              {getGreeting()}, <span className="text-blue-600">{user?.fullName?.split(' ')[0] || 'there'}!</span>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight font-outfit transition-colors duration-300">
+              {getGreeting()}, <span className="text-blue-600 dark:text-blue-400">{user?.fullName?.split(' ')[0] || 'there'}!</span>
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <Sparkles size={14} className="text-amber-500" />
-              <p className="text-xs text-slate-500 font-bold tracking-tight uppercase">Ready to capture your next big idea?</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold tracking-tight uppercase transition-colors duration-300">Ready to capture your next big idea?</p>
             </div>
           </div>
 
@@ -188,13 +188,13 @@ const Home = () => {
                 placeholder="Search notes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 pl-11 pr-4 w-72 bg-slate-50 border border-transparent rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-blue-100/50 focus:border-blue-200 transition-all duration-300 outline-none placeholder:text-slate-400 font-medium font-inter"
+                className="h-11 pl-11 pr-4 w-72 bg-slate-50 dark:bg-slate-800 border border-transparent rounded-xl text-sm focus:bg-white dark:focus:bg-slate-700 focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/50 focus:border-blue-200 dark:focus:border-blue-700 transition-all duration-300 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-white font-medium font-inter"
               />
             </div>
 
             <button 
               onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-              className="p-2.5 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-blue-600 transition-all border border-transparent hover:border-slate-100 flex items-center gap-2"
+              className="p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-700 flex items-center gap-2"
               title={viewMode === 'grid' ? 'Switch to List' : 'Switch to Grid'}
             >
               {viewMode === 'grid' ? <List size={18} /> : <LayoutGrid size={18} />}
@@ -204,7 +204,7 @@ const Home = () => {
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setOpenAddEditModal({ isShown: true, type: "add", data: null })}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl shadow-blue-200/50 flex items-center gap-2 text-sm font-black tracking-tight transition-all active:ring-4 active:ring-blue-100"
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl shadow-blue-200/50 dark:shadow-none flex items-center gap-2 text-sm font-black tracking-tight transition-all active:ring-4 active:ring-blue-100"
             >
               <Plus size={18} strokeWidth={3} />
               New Note
@@ -224,14 +224,14 @@ const Home = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="bg-white p-4 rounded-2xl border border-slate-100 flex items-center gap-4 premium-shadow"
+              className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center gap-4 premium-shadow dark:shadow-none transition-colors duration-300"
             >
-              <div className={`w-12 h-12 ${s.bg} rounded-xl flex items-center justify-center ${s.color}`}>
+              <div className={`w-12 h-12 ${s.bg} dark:bg-opacity-10 rounded-xl flex items-center justify-center ${s.color}`}>
                 <s.icon size={20} />
               </div>
               <div>
                 <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{s.label}</p>
-                <p className="text-xl font-black text-slate-900 font-outfit">{s.count}</p>
+                <p className="text-xl font-black text-slate-900 dark:text-white font-outfit">{s.count}</p>
               </div>
             </motion.div>
           ))}
@@ -245,7 +245,7 @@ const Home = () => {
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors border ${
                 !selectedTag 
                   ? 'bg-blue-600 text-white border-blue-600' 
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:bg-blue-50'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40'
               }`}
             >
               All Topics
@@ -257,7 +257,7 @@ const Home = () => {
                 className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors border ${
                   selectedTag === tag 
                     ? 'bg-blue-600 text-white border-blue-600' 
-                    : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:bg-blue-50'
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40'
                 }`}
               >
                 #{tag}
@@ -329,15 +329,15 @@ const Home = () => {
                   <button 
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-4 py-2 bg-white rounded-xl border border-slate-200 text-slate-600 disabled:opacity-50 hover:bg-slate-50 transition-colors shadow-sm font-medium flex-shrink-0"
+                    className="px-4 py-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm font-medium flex-shrink-0"
                   >
                     Previous
                   </button>
-                  <span className="text-sm font-bold text-slate-700 whitespace-nowrap">Page {page} of {totalPages} ({stats.total} total notes)</span>
+                  <span className="text-sm font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">Page {page} of {totalPages} ({stats.total} total notes)</span>
                   <button 
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
-                    className="px-4 py-2 bg-white rounded-xl border border-slate-200 text-slate-600 disabled:opacity-50 hover:bg-slate-50 transition-colors shadow-sm font-medium flex-shrink-0"
+                    className="px-4 py-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm font-medium flex-shrink-0"
                   >
                     Next
                   </button>
@@ -350,20 +350,20 @@ const Home = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="h-full flex flex-col items-center justify-center max-w-md mx-auto text-center"
               >
-                <div className="w-24 h-24 bg-blue-50 rounded-3xl flex items-center justify-center mb-8 relative">
-                  <div className="absolute inset-0 bg-blue-200 rounded-3xl blur-xl opacity-20 animate-pulse"></div>
-                  <FileText size={40} className="text-blue-600 relative z-10" />
-                  <div className="absolute -right-2 -top-2 w-8 h-8 bg-white rounded-xl shadow-lg flex items-center justify-center">
+                <div className="w-24 h-24 bg-blue-50 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-8 relative">
+                  <div className="absolute inset-0 bg-blue-200 dark:bg-blue-900 rounded-3xl blur-xl opacity-20 animate-pulse"></div>
+                  <FileText size={40} className="text-blue-600 dark:text-blue-400 relative z-10" />
+                  <div className="absolute -right-2 -top-2 w-8 h-8 bg-white dark:bg-slate-900 rounded-xl shadow-lg flex items-center justify-center border border-transparent dark:border-slate-800">
                     <Sparkles size={16} className="text-amber-500" />
                   </div>
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-3">Your workspace is quiet</h2>
-                <p className="text-slate-500 mb-10 leading-relaxed text-sm">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 transition-colors">Your workspace is quiet</h2>
+                <p className="text-slate-500 dark:text-slate-400 mb-10 leading-relaxed text-sm transition-colors">
                   Start by creating your first note. Ideas are meant to be captured and organized.
                 </p>
                 <button
                   onClick={() => setOpenAddEditModal({ isShown: true, type: "add", data: null })}
-                  className="group px-8 py-4 bg-slate-900 hover:bg-black text-white rounded-2xl font-bold flex items-center gap-3 transition-all shadow-xl shadow-slate-200"
+                  className="group px-8 py-4 bg-slate-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white rounded-2xl font-bold flex items-center gap-3 transition-all shadow-xl shadow-slate-200 dark:shadow-none border border-transparent dark:border-slate-700"
                 >
                   Create My First Note
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
@@ -380,7 +380,7 @@ const Home = () => {
         onRequestClose={() => setOpenAddEditModal({ isShown: false, type: "add", data: null })}
         style={{ overlay: { backgroundColor: "rgba(0,0,0,0.45)", zIndex: 100, backdropFilter: "blur(4px)" } }}
         contentLabel=""
-        className="max-w-xl w-[90%] max-h-[87vh] bg-white rounded-3xl mx-auto mt-16 p-10 overflow-hidden outline-none shadow-2xl relative border border-slate-100"
+        className="max-w-xl w-[90%] max-h-[87vh] bg-white dark:bg-slate-900 rounded-3xl mx-auto mt-16 p-10 overflow-hidden outline-none shadow-2xl relative border border-slate-100 dark:border-slate-800 transition-colors"
       >
         <AddEditNotes
           type={openAddEditModal.type}

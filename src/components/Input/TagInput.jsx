@@ -32,11 +32,11 @@ const TagInput = ({ tags, setTags }) => {
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="flex items-center gap-2 text-[11px] font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg uppercase tracking-wider group"
+              className="flex items-center gap-2 text-[11px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg uppercase tracking-wider group"
             >
               # {tag}
               <button
-                className="hover:text-red-500 transition-colors"
+                className="hover:text-red-500 dark:hover:text-red-400 transition-colors"
                 onClick={() => {
                   handleRemoveTag(tag);
                 }}
@@ -52,14 +52,14 @@ const TagInput = ({ tags, setTags }) => {
         <input
           type="text"
           value={inputValue}
-          className="text-sm bg-transparent border-2 border-slate-100 px-3 py-2 rounded-lg outline-none focus:border-blue-400 transition-all w-full max-w-[200px]"
+          className="text-sm text-slate-900 dark:text-white bg-transparent border-2 border-slate-100 dark:border-slate-700 px-3 py-2 rounded-lg outline-none focus:border-blue-400 dark:focus:border-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all w-full max-w-[200px]"
           placeholder="Enter tag..."
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
         />
 
         <button
-          className="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-slate-100 hover:border-blue-600 hover:bg-blue-600 text-slate-400 hover:text-white transition-all group"
+          className="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-slate-100 dark:border-slate-700 hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-600 dark:hover:bg-blue-500 text-slate-400 dark:text-slate-500 hover:text-white transition-all group"
           onClick={() => {
             addNewTag();
           }}

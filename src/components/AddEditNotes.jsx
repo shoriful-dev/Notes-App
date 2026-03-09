@@ -64,7 +64,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
         <label className="input-label tracking-widest">NOTE TITLE</label>
         <input
           type="text"
-          className="text-3xl font-black text-slate-900 outline-none bg-slate-50/50 px-4 py-3 rounded-2xl border border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-100/50 transition-all duration-300 font-outfit"
+          className="text-3xl font-black text-slate-900 dark:text-white outline-none bg-slate-50/50 dark:bg-slate-900/50 px-4 py-3 rounded-2xl border border-transparent focus:bg-white dark:focus:bg-slate-800 focus:border-blue-200 dark:focus:border-blue-800 focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/50 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-300 font-outfit"
           placeholder="What's on your mind?"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
@@ -75,7 +75,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
       <div className="flex flex-col gap-2 mb-6">
         <label className="input-label tracking-widest">DESCRIPTION</label>
         <textarea
-          className="text-[15px] font-medium text-slate-600 outline-none bg-slate-50/50 p-4 rounded-2xl border border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-100/50 transition-all duration-300 resize-none leading-relaxed min-h-[180px]"
+          className="text-[15px] font-medium text-slate-600 dark:text-slate-300 outline-none bg-slate-50/50 dark:bg-slate-900/50 p-4 rounded-2xl border border-transparent focus:bg-white dark:focus:bg-slate-800 focus:border-blue-200 dark:focus:border-blue-800 focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/50 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-300 resize-none leading-relaxed min-h-[180px]"
           placeholder="Start writing..."
           value={content}
           onChange={({ target }) => setContent(target.value)}
@@ -88,7 +88,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
         {/* Priority */}
         <div>
           <label className="input-label mb-2 block tracking-widest">PRIORITY</label>
-          <div className="flex gap-2 p-1 bg-slate-50 rounded-xl border border-slate-100">
+          <div className="flex gap-2 p-1 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700">
             {PRIORITIES.map((p) => (
               <button
                 key={p.key}
@@ -96,8 +96,8 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
                 onClick={() => setPriority(p.key)}
                 className={`flex-1 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all duration-300 ${
                   priority === p.key
-                    ? "bg-white text-blue-600 shadow-sm border border-slate-100 scale-105"
-                    : "text-slate-400 hover:text-slate-600"
+                    ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm dark:shadow-none border border-slate-100 dark:border-slate-600 scale-105"
+                    : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                 }`}
               >
                 {p.label}
@@ -118,7 +118,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
                 onClick={() => setColor(c.key)}
                 className={`w-5 h-5 rounded-full ${c.dot} transition-all duration-300 relative ${
                   color === c.key
-                    ? `ring-4 ring-offset-0 ring-blue-100 scale-125 z-10 shadow-sm`
+                    ? `ring-4 ring-offset-0 ring-blue-100 dark:ring-blue-900/50 scale-125 z-10 shadow-sm dark:shadow-none`
                     : "hover:scale-125 opacity-70 hover:opacity-100"
                 }`}
               >

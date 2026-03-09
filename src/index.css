@@ -20,6 +20,8 @@
   --color-border: var(--border);
 }
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
@@ -27,6 +29,15 @@
   --primary-foreground: #ffffff;
   --accent: #eff6ff;
   --border: #e2e8f0;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --accent: #1e293b;
+  --border: #334155;
 }
 
 @layer base {
@@ -62,11 +73,11 @@
   }
 
   .input-label {
-    @apply text-[11px] font-black text-slate-400 tracking-widest uppercase mb-1.5;
+    @apply text-[11px] font-black text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-1.5;
   }
 
   .glass-card {
-    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-xl shadow-slate-200/40;
+    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-none;
   }
 
   .premium-shadow {
@@ -87,4 +98,8 @@
     scrollbar-width: thin;
     scrollbar-color: #e2e8f0 transparent;
   }
+}
+
+.dark .custom-scrollbar {
+  scrollbar-color: #334155 transparent;
 }

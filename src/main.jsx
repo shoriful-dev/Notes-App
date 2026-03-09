@@ -4,12 +4,15 @@ import './index.css'
 import App from './App.jsx'
 import { Toaster } from 'sonner'
 import { UserProvider } from './context/userContext'
+import { ThemeProvider } from 'next-themes'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <UserProvider>
-      <App />
-      <Toaster />
-    </UserProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <UserProvider>
+        <App />
+        <Toaster />
+      </UserProvider>
+    </ThemeProvider>
   </StrictMode>,
 )
