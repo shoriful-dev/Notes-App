@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useSignIn } from "@clerk/react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../components/Input/PasswordInput";
 import axiosInstance, { API_BASE_URL } from "../utils/axiosInstance";
@@ -12,6 +13,7 @@ const Login = () => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { setUser } = useContext(UserContext);
+    const { signIn } = useSignIn();
 
     const navigate = useNavigate();
 
@@ -57,7 +59,12 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = `${API_BASE_URL}/auth/google`;
+        if (!signIn) return;
+        signIn.authenticateWithRedirect({
+            strategy: "oauth_google",
+            redirectUrl: "/sso-callback",
+            redirectUrlComplete: "/dashboard",
+        });
     };
 
     return (
