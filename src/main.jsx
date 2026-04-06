@@ -11,7 +11,7 @@ import AuthInterceptor from './components/AuthInterceptor'
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
 if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Clerk Publishable Key")
+  console.error("Missing Clerk Publishable Key in .env file")
 }
 
 createRoot(document.getElementById('root')).render(
