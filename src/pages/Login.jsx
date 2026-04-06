@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../components/Input/PasswordInput";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance, { API_BASE_URL } from "../utils/axiosInstance";
 import { toast } from "sonner";
 import UserContext from "../context/userContext";
 import { BookOpen, LogIn, Mail } from "lucide-react";
@@ -57,7 +57,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = "http://localhost:8000/auth/google";
+        window.location.href = `${API_BASE_URL}/auth/google`;
     };
 
     return (

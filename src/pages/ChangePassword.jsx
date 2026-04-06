@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import axios from 'axios'
+import axiosInstance from '@/utils/axiosInstance'
 import { Loader2 } from 'lucide-react'
 import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -30,7 +30,7 @@ const ChangePassword = () => {
 
         try {
             setIsLoading(true)
-            const res = await axios.post(`http://localhost:8000/auth/change-password/${email}`, {
+            const res = await axiosInstance.post(`/auth/change-password/${email}`, {
                 newPassword,
                 confirmPassword
             })

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -10,8 +10,8 @@ const Verify = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const res = await axios.post(
-          `http://localhost:8000/auth/verify`,
+        const res = await axiosInstance.post(
+          `/auth/verify`,
           {},
           {
             headers: {

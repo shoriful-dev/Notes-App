@@ -3,8 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { getData } from '@/context/userContext'
-import axios from 'axios'
+import axiosInstance from '@/utils/axiosInstance'
 import { CheckCircle, Loader2 } from 'lucide-react'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -21,7 +20,7 @@ const ForgotPassword = () => {
         e.preventDefault()
         try {
             setIsLoading(true)
-            const res = await axios.post(`http://localhost:8000/auth/forgot-password`, {
+            const res = await axiosInstance.post(`/auth/forgot-password`, {
                 email
             });
             if (res.data.success) {
@@ -124,4 +123,4 @@ const ForgotPassword = () => {
     )
 }
 
-export default ForgotPassword
+export default ForgotPassword;
