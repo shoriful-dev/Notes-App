@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
-import { useSignIn } from "@clerk/react";
+import { useSignIn } from "@clerk/react/legacy";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../components/Input/PasswordInput";
 import axiosInstance, { API_BASE_URL } from "../utils/axiosInstance";
 import { toast } from "sonner";
 import UserContext from "../context/userContext";
-import { BookOpen, LogIn, Mail } from "lucide-react";
+import { LogIn, Mail } from "lucide-react";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -13,7 +13,7 @@ const Login = () => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { setUser } = useContext(UserContext);
-    const { signIn } = useSignIn();
+    const { isLoaded, signIn } = useSignIn();
 
     const navigate = useNavigate();
 
@@ -58,13 +58,27 @@ const Login = () => {
         }
     };
 
-    const handleGoogleLogin = () => {
-        if (!signIn) return;
-        signIn.authenticateWithRedirect({
-            strategy: "oauth_google",
-            redirectUrl: "/sso-callback",
-            redirectUrlComplete: "/dashboard",
-        });
+    const handleGoogleLogin = async () => {
+        if (!isLoaded || !signIn) {
+            toast.error("Still loading sign-in. Try again in a moment.");
+            return;
+        }
+        const origin = window.location.origin;
+        try {
+            await signIn.authenticateWithRedirect({
+                strategy: "oauth_google",
+                redirectUrl: `${origin}/sso-callback`,
+                redirectUrlComplete: `${origin}/dashboard`,
+            });
+        } catch (err) {
+            const msg =
+                err?.errors?.[0]?.longMessage ||
+                err?.errors?.[0]?.message ||
+                err?.message ||
+                "Google sign-in failed";
+            console.error(err);
+            toast.error(msg);
+        }
     };
 
     return (
@@ -131,8 +145,10 @@ const Login = () => {
                         </div>
 
                         <button 
+                            type="button"
                             onClick={handleGoogleLogin}
-                            className="w-full bg-background hover:bg-slate-50 dark:hover:bg-slate-900 border border-border text-foreground rounded-2xl py-4 font-bold transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                            disabled={!isLoaded}
+                            className="w-full bg-background hover:bg-slate-50 dark:hover:bg-slate-900 border border-border text-foreground rounded-2xl py-4 font-bold transition-all flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-60"
                         >
                             <svg className="h-5 w-5" viewBox="0 0 24 24">
                                 <path

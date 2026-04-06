@@ -6,7 +6,8 @@ import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UserContext from "./context/userContext";
 import Landing from "./pages/Landing";
-import { ClerkProvider, AuthenticateWithRedirectCallback } from "@clerk/react";
+import AuthSuccess from "./pages/AuthSuccess";
+import SSOCallback from "./pages/SSOCallback";
 import ThemeToggle from "./components/ThemeToggle";
 
 const App = () => {
@@ -37,7 +38,7 @@ const App = () => {
                 />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/sso-callback" element={<AuthenticateWithRedirectCallback />} />
+                <Route path="/sso-callback" element={<SSOCallback />} />
                 <Route path="/auth-success" element={<AuthSuccess />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

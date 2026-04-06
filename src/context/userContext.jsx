@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
 
     const checkUser = useCallback(async () => {
         const token = localStorage.getItem("token");
-        
+
         // If no manual token AND not signed in with Clerk, don't fetch
         if (!token && !isSignedIn) {
             setLoading(false);
@@ -30,7 +30,7 @@ export const UserProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [isSignedIn]);
 
     useEffect(() => {
         if (isLoaded) {
